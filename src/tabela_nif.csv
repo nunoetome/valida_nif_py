@@ -1,4 +1,4 @@
-indice,categoria,prefixos,descricao,base_legal,estado
+﻿indice,categoria,prefixos,descricao,base_legal,estado
 A,Pessoa Singular - Residente,"1;2;3",Cidadaos nacionais e estrangeiros residentes,DL 14/2013 Art4 + Nota AT 2019-07-04,ativo
 B,Pessoa Singular - Nao Residente com Rendimentos,45,Nao residentes apenas com rendimentos com retencao definitiva,DL 14/2013 Art4 n3,ativo
 C,Pessoa Coletiva - Residente,5,Sociedades comerciais e empresas privadas residentes,RNPC DL129/98 Art13,ativo

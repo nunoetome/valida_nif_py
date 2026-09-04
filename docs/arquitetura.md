@@ -3,10 +3,9 @@
 ## Visão Geral
 
 ```
-src/valida_nif_py/__init__.py  -> valida_nif, completa_nif, classifica_nif
-src/valida_nif_py/tabela_nif.csv -> mapeamento indice->categoria
-valida_nif_py.py               -> shim compatibilidade raiz
-docs/                          -> documentação técnica e utilizador
+src/valida_nif.py      -> valida_nif, completa_nif, classifica_nif
+src/tabela_nif.csv     -> mapeamento indice->categoria
+docs/                  -> documentação técnica e utilizador
 ```
 
 ## Fluxo de Validação e Classificação

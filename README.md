@@ -1,4 +1,4 @@
-# valida_nif_py
+# valida-nif
 Valida a estrutura de NIF português — validação, compleção e classificação.
 
 ## Instalação
@@ -10,9 +10,8 @@ pip install -e .
 ## Estrutura
 
 ```
-src/valida_nif_py/__init__.py  # código (valida_nif, completa_nif, classifica_nif)
-src/valida_nif_py/tabela_nif.csv
-valida_nif_py.py               # shim raiz compatibilidade
+src/valida_nif.py      # código (valida_nif, completa_nif, classifica_nif)
+src/tabela_nif.csv
 docs/arquitetura.md            # técnica + mermaid
 docs/guia-utilizador.md        # exemplos módulo e CLI
 docs/tabela-nif.md             # tabela A-G/X
@@ -21,7 +20,7 @@ docs/tabela-nif.md             # tabela A-G/X
 ## Uso Rápido
 
 ```python
-from valida_nif_py import valida_nif, completa_nif, classifica_nif
+from valida_nif import valida_nif, completa_nif, classifica_nif
 
 valida_nif("123456789")          # True
 valida_nif("PT123456789")        # True (PT/pt apenas)
@@ -33,10 +32,12 @@ classifica_nif("450000001")      # "B" (45) / "X" se invalido
 CLI:
 
 ```bash
-python valida_nif_py.py --valida_nif 123456789
-python valida_nif_py.py --completa 12345678
-python valida_nif_py.py --classifica 123456789
-python valida_nif_py.py --classifica 123456789 --csv
+valida-nif --valida_nif 123456789
+valida-nif --completa 12345678
+valida-nif --classifica 123456789
+valida-nif --classifica 123456789 --csv
+python -m valida_nif --valida_nif 123456789
+python src/valida_nif.py --valida_nif 123456789
 ```
 
 Mais exemplos em [docs/guia-utilizador.md](docs/guia-utilizador.md).
@@ -54,7 +55,7 @@ Mais exemplos em [docs/guia-utilizador.md](docs/guia-utilizador.md).
 | G | Condomínios/Irregulares/Não Residentes | 9,90,91,98,99 |
 | X | Inválido | 0,4,formato,controlo |
 
-Tabela completa em [docs/tabela-nif.md](docs/tabela-nif.md) e [src/valida_nif_py/tabela_nif.csv](src/valida_nif_py/tabela_nif.csv).
+Tabela completa em [docs/tabela-nif.md](docs/tabela-nif.md) e [src/tabela_nif.csv](src/tabela_nif.csv).
 
 ## Documentação
 

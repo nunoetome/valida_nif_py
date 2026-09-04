@@ -5,14 +5,13 @@
 ```bash
 pip install -e .
 # ou sem instalar
-PYTHONPATH=src python -m valida_nif_py
+PYTHONPATH=src python -m valida_nif
 ```
 
 ## Uso como Módulo
 
 ```python
-from valida_nif_py import valida_nif, completa_nif, classifica_nif, classifica_nif_detalhado
-from src.valida_nif_py import valida_nif  # layout src
+from valida_nif import valida_nif, completa_nif, classifica_nif, classifica_nif_detalhado
 
 valida_nif("123456789")          # True
 valida_nif("PT123456789")        # True
@@ -34,12 +33,13 @@ classifica_nif_detalhado("123456789")
 ## CLI
 
 ```bash
-python valida_nif_py.py --valida_nif 123456789        # valido (exit 0) / invalido (exit 1)
-python valida_nif_py.py --valida_nif PT123456789
-python valida_nif_py.py --completa 12345678           # 123456789
-python valida_nif_py.py --classifica 123456789        # A - Pessoa Singular - Residente
-python valida_nif_py.py --classifica 500000001 --csv  # csv header + linha
-python -m src.valida_nif_py --classifica 123456789    # via src
+valida-nif --valida_nif 123456789        # valido (exit 0) / invalido (exit 1)
+valida-nif --valida_nif PT123456789
+valida-nif --completa 12345678           # 123456789
+valida-nif --classifica 123456789        # A - Pessoa Singular - Residente
+valida-nif --classifica 500000001 --csv  # csv header + linha
+python -m valida_nif --classifica 123456789    # via -m
+python src/valida_nif.py --classifica 123456789 # ficheiro direto em src/
 ```
 
 ## Códigos de Saída

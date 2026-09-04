@@ -1,6 +1,6 @@
 # Tabela de Correspondência NIF
 
-Fonte: `src/valida_nif_py/tabela_nif.csv` — 1-char `indice` → `categoria`
+Fonte: `src/tabela_nif.csv` — 1-char `indice` → `categoria`
 
 ## Índices A-G + X
 
