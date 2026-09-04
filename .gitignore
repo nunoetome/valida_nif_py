@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# VS Code workspace - ficheiro local com customizações peacock
+*.code-workspace
+
+# Ficheiro com typo (requesitos.txt vazio) - ignorar artefacto local
+requesitos.txt
+
+# Opencode - tooling local AI (remover esta linha se a equipa decidir partilhar agentes)
+.opencode/
