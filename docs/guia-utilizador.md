@@ -33,13 +33,15 @@ classifica_nif_detalhado("123456789")
 ## CLI
 
 ```bash
-valida-nif --valida_nif 123456789        # valido (exit 0) / invalido (exit 1)
-valida-nif --valida_nif PT123456789
-valida-nif --completa 12345678           # 123456789
-valida-nif --classifica 123456789        # A - Pessoa Singular - Residente
-valida-nif --classifica 500000001 --csv  # csv header + linha
-python -m valida_nif --classifica 123456789    # via -m
-python src/valida_nif.py --classifica 123456789 # ficheiro direto em src/
+python -m valida_nif --valida_nif 123456789        # valido (exit 0) / invalido (exit 1)
+python -m valida_nif --valida_nif PT123456789
+python -m valida_nif --completa 12345678           # 123456789
+python -m valida_nif --classifica 123456789        # A - Pessoa Singular - Residente
+python -m valida_nif --classifica 500000001 --csv  # csv header + linha
+python src/valida_nif.py --classifica 123456789    # ficheiro direto em src/
+# após pip install -e . (requer venv ativo):
+valida-nif --valida_nif 123456789
+valida-nif --completa 12345678
 ```
 
 ## Códigos de Saída

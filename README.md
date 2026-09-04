@@ -32,12 +32,15 @@ classifica_nif("450000001")      # "B" (45) / "X" se invalido
 CLI:
 
 ```bash
+python -m valida_nif --valida_nif 123456789
+python -m valida_nif --completa 12345678
+python -m valida_nif --classifica 123456789
+python -m valida_nif --classifica 123456789 --csv
+python src/valida_nif.py --valida_nif 123456789  # ficheiro direto em src/
+python src/valida_nif.py --completa 12345678     # sem instalar
+# após pip install -e . (requer venv ativo e PATH):
 valida-nif --valida_nif 123456789
 valida-nif --completa 12345678
-valida-nif --classifica 123456789
-valida-nif --classifica 123456789 --csv
-python -m valida_nif --valida_nif 123456789
-python src/valida_nif.py --valida_nif 123456789
 ```
 
 Mais exemplos em [docs/guia-utilizador.md](docs/guia-utilizador.md).

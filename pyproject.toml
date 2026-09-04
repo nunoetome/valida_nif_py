@@ -13,6 +13,7 @@ authors = [{name = "nunoetome"}]
 
 [project.scripts]
 valida-nif = "valida_nif:main"
+valida_nif = "valida_nif:main"
 
 [tool.setuptools]
 py-modules = ["valida_nif"]
