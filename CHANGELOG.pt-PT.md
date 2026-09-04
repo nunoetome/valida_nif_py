@@ -7,6 +7,19 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-PT/spec/v2
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-04
+
+### Added
+- `classifica_nif(nif)` — classifica um NIF válido e devolve índice 1-char `A-G` ou `X` para inválido/desconhecido. Reutiliza `valida_nif`/`_normalizar`, trata prefixo `PT`/`pt`, prioridade 2 dígitos `45` e sub-gamas `70/71/72/74/75/77/79/90/91/98/99` antes de fallback 1 dígito; `X` em erro de checksum/formato/prefixo (`A`=1-3 Singular Residente, `B`=45 Não residente c/ rendimentos, `C`=5 Pessoa Coletiva, `D`=6 Organismos Públicos, `E`=7* Heranças/Fundos/AT, `F`=8 ENI obsoleto, `G`=9* Condomínios/Irregulares/Não residentes, `X`=inválido).
+- `classifica_nif_detalhado(nif)` — devolve `{"indice","categoria","descricao","valido","nif"}` usando `TABELA_NIF` e `_carregar_tabela_csv()` com fallback CSV.
+- `TABELA_NIF` + `src/valida_nif_py/tabela_nif.csv` — tabela de correspondência `indice,categoria,prefixos,descricao,base_legal,estado` UTF-8.
+- CLI `--classifica <NIF>` + `--csv` — imprime `A - Categoria` ou linha CSV, termina `0` válido / `1` inválido.
+- Docs — `docs/arquitetura.md` (fluxo mermaid), `docs/guia-utilizador.md` (exemplos módulo+CLI), `docs/tabela-nif.md` (tabela A-G/X + sub-gamas + mermaid), layout `src` e `pyproject.toml`.
+
+### Changed
+- Refactor para layout `src` — `valida_nif_py.py` → `src/valida_nif_py/__init__.py` via `git mv`; shim `valida_nif_py.py` na raiz mantém compatibilidade `from valida_nif_py import ...`; adicionado `pyproject.toml` (PEP 621, `where=["src"]`).
+- Atualizado `README.md` com estrutura, quick-start, tabela classificação e links docs.
+
 ## [1.0.0] - 2026-09-04
 
 Primeira versão estável (initial stable release). Primeira versão pública do validador de NIF (Número de Identificação Fiscal) português.
