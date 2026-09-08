@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "valida-nif"
+version = "1.1.0"
+description = "Valida a estrutura de NIF portugues"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "nunoetome"}]
+
+[project.scripts]
+valida-nif = "valida_nif:main"
+valida_nif = "valida_nif:main"
+
+[tool.setuptools]
+py-modules = ["valida_nif"]
+
+[tool.setuptools.package-dir]
+"" = "src"
