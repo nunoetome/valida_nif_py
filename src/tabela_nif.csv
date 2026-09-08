@@ -1,0 +1,9 @@
+﻿indice,categoria,prefixos,descricao,base_legal,estado
+A,Pessoa Singular - Residente,"1;2;3",Cidadaos nacionais e estrangeiros residentes,DL 14/2013 Art4 + Nota AT 2019-07-04,ativo
+B,Pessoa Singular - Nao Residente com Rendimentos,45,Nao residentes apenas com rendimentos com retencao definitiva,DL 14/2013 Art4 n3,ativo
+C,Pessoa Coletiva - Residente,5,Sociedades comerciais e empresas privadas residentes,RNPC DL129/98 Art13,ativo
+D,Organismos Publicos,6,Estado camaras escolas administracao publica,RNPC DL129/98 Art13,ativo
+E,Herancas Fundos e Entidades Especiais (AT),"70;71;72;74;75;77;79;7",Herancas indivisas fundos investimento atribuicao oficiosa regime Expo98,DL14/2013 Art11 n3 Art16 n2,ativo
+F,Empresario em Nome Individual (ENI),8,ENI historico hoje migrado para 1-3,RNPC DL129/98 Art13,obsoleto
+G,Condominios Sociedades Irregulares e Nao Residentes Coletivos,"90;91;98;99;9",Condominios sociedades irregulares civis e nao residentes s/ estabelecimento,RNPC DL129/98 Art13,ativo
+X,Invalido ou Desconhecido,"0;4",Prefixo nao atribuido formato invalido ou digito controlo errado,N/A,erro
