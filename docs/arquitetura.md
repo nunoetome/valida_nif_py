@@ -5,8 +5,11 @@
 ```
 src/valida_nif.py      -> PT: valida_nif, completa_nif, classifica_nif
 src/valida_nif_es.py   -> ES: valida_nif_es, valida_dni/nie/cif, completa_*
+src/valida_nif_fr.py   -> FR: valida_siren/siret/tva/nir, completa_* (Luhn/mod97)
 src/tabela_nif.csv     -> mapeamento PT indice->categoria
-valida_nif_es.py       -> shim raiz (re-exporta src/valida_nif_es.py)
+valida_nif_es.py       -> shim raiz ES (re-exporta src/valida_nif_es.py)
+valida_nif_fr.py       -> shim raiz FR (re-exporta src/valida_nif_fr.py)
+valida_siret_fr.py     -> alias shim FR
 docs/                  -> documentação técnica e utilizador
 ```
 
@@ -53,20 +56,50 @@ flowchart TD
     I -->|Nao| X
 ```
 
+## Fluxo de Validação — FR (SIREN/SIRET/TVA/NIR)
+
+```mermaid
+flowchart TD
+    A[Input FR str/int/None] --> B[_normalizar FR/fr + strip -/space/. + upper]
+    B -->|None / Fr/fR| X[False]
+    B --> C{len?}
+    C -->|9 digitos| D[valida_siren Luhn mod10]
+    C -->|14 digitos| E[valida_siret Luhn14 + siren9]
+    C -->|13 FR+2+9| F[valida_tva clé 12+3*siren%97]
+    C -->|15 NIR| G[valida_nir 97 - n%97 2A->19 2B->18]
+    C -->|outro| X
+    D --> H{Luhn==0?}
+    E --> I{Luhn14==0 && siren?}
+    F --> J{clé==esperado && siren?}
+    G --> K{sexo 1278 && clé==97-n%97?}
+    H -->|Sim| V[True]
+    H -->|Nao| X
+    I -->|Sim| V
+    I -->|Nao| X
+    J -->|Sim| V
+    J -->|Nao| X
+    K -->|Sim| V
+    K -->|Nao| X
+```
+
 ## Componentes
 
 ```mermaid
 graph TD
     CLI_PT[valida-nif CLI] --> MOD_PT[src/valida_nif.py]
     CLI_ES[valida-nif-es CLI] --> MOD_ES[src/valida_nif_es.py]
+    CLI_FR[valida-nif-fr / valida-siret-fr CLI] --> MOD_FR[src/valida_nif_fr.py]
     MOD_PT --> CSV[src/tabela_nif.csv]
     MOD_PT --> TABELA[TABELA_NIF dict]
     MOD_ES --> T_DNI[TRWAGMYFPDXBNJZSQVHLCKE]
     MOD_ES --> M_CIF[JABCDEFGHI]
     MOD_ES --> TIPOS[_TIPOS_CIF ABCDEFGHJNPQRSUVW]
+    MOD_FR --> LUHN[_luhn_soma / _calcular_luhn]
+    MOD_FR --> TVA_TVA[clé 12+3*siren%97]
+    MOD_FR --> NIR[NIR 97-n%97 2A/2B]
 ```
 
-## Classes (PT vs ES)
+## Classes (PT vs ES vs FR)
 
 ```mermaid
 classDiagram
@@ -90,7 +123,20 @@ classDiagram
         -_letra_dni() char
         -_calcular_controlo_cif() digito,letra
     }
+    class ValidaNifFR {
+        +valida_nif_fr(nif) bool
+        +valida_siren(nif) bool
+        +valida_siret(nif) bool
+        +valida_tva_fr(nif) bool
+        +valida_nir(nif) bool
+        +completa_siren/siret/tva/nir() str
+        +completa_nif_fr() str
+        -_normalizar() str?
+        -_luhn_soma() int
+        -_calcular_luhn() int
+    }
     ValidaNifPT ..> ValidaNifES : estilo comum _normalizar + CLI 0/1/2
+    ValidaNifES ..> ValidaNifFR : mesmo estilo FR/fr + Luhn/mod97
 ```
 
 ## Módulos
@@ -112,6 +158,15 @@ classDiagram
 | `valida_cif` (ES) | letra+7+d/l ABEH so digito PQSNW so letra |
 | `valida_nif_es` (ES) | dispatcher DNI/NIE/CIF |
 | `completa_dni/nie/cif` (ES) | 8->9 chars por tipo |
+| `_normalizar` (FR) | trim, FR/fr, remove -/espaco/., upper |
+| `_luhn_soma` (FR) | soma Luhn dobra 2º dígito -9 |
+| `_calcular_luhn` (FR) | (10 - soma%10)%10 com base+0 |
+| `valida_siren` (FR) | 9 digitos Luhn |
+| `valida_siret` (FR) | 14 digitos Luhn + siren9 |
+| `valida_tva_fr` (FR) | FR+2+9 clé=(12+3*siren%97)%97 |
+| `valida_nir` (FR) | 15 97-(n%97) 2A→19/2B→18 |
+| `valida_nif_fr` (FR) | dispatcher SIREN/SIRET/TVA/NIR |
+| `completa_siren/siret/tva/nir` (FR) | 8->9, 13->14, 9->FRxx+9, 13->15 |
 
 ## Decisões
 
@@ -122,3 +177,6 @@ classDiagram
 - ES `Es/eS` rejeitado (apenas `ES`/`es`), coerente com PT `Pt/pT`.
 - CIF `ABEH` só dígito, `PQSNW` só letra, resto ambos — regra AEAT pós-2008.
 - ES remove `-` e espaço e aplica `upper()` para aceitar `12345678-Z` / `X-1234567-L`.
+- FR `Fr/fR` rejeitado (apenas `FR`/`fr`), coerente com PT/ES.
+- FR remove `-`, espaço e `.` e aplica `upper()` para `FR 40 303265045` / `732-829-320-00074`.
+- FR SIRET valida SIREN embutido + Luhn14; TVA valida SIREN + clé mod97; NIR trata Córsega 2A/2B.

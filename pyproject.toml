@@ -5,21 +5,25 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "valida-nif"
 version = "1.2.0"
-description = "Valida NIF portugues (mod11) e NIF espanhol — DNI/NIE/CIF (mod23/CIF)"
+description = "Valida NIF portugues (mod11), NIF espanhol — DNI/NIE/CIF (mod23/CIF) e FR — SIREN/SIRET/TVA/NIR (Luhn/mod97)"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [{name = "nunoetome"}]
-keywords = ["nif", "dni", "nie", "cif", "valida-nif", "portugal", "espanha"]
+keywords = ["nif", "dni", "nie", "cif", "siren", "siret", "tva", "nir", "valida-nif", "portugal", "espanha", "franca"]
 
 [project.scripts]
 valida-nif = "valida_nif:main"
 valida_nif = "valida_nif:main"
 valida-nif-es = "valida_nif_es:main"
 valida_nif_es = "valida_nif_es:main"
+valida-nif-fr = "valida_nif_fr:main"
+valida_nif_fr = "valida_nif_fr:main"
+valida-siret-fr = "valida_nif_fr:main"
+valida_siret_fr = "valida_nif_fr:main"
 
 [tool.setuptools]
-py-modules = ["valida_nif", "valida_nif_es"]
+py-modules = ["valida_nif", "valida_nif_es", "valida_nif_fr"]
 
 [tool.setuptools.package-dir]
 "" = "src"

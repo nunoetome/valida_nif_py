@@ -1,5 +1,5 @@
 # valida-nif
-Valida NIF português (mod11) e NIF espanhol — DNI/NIE/CIF (mod23/CIF). Validação, compleção e classificação.
+Valida NIF português (mod11), NIF espanhol — DNI/NIE/CIF (mod23/CIF) e FR — SIREN/SIRET/TVA/NIR (Luhn/mod97). Validação, compleção e classificação.
 
 ## Instalação
 
@@ -12,12 +12,16 @@ pip install -e .
 ```
 src/valida_nif.py      # PT: valida_nif, completa_nif, classifica_nif
 src/valida_nif_es.py   # ES: valida_nif_es, valida_dni/nie/cif, completa_*
+src/valida_nif_fr.py   # FR: valida_siren/siret/tva/nir, completa_*
 src/tabela_nif.csv     # PT: mapeamento A-G/X
-valida_nif_es.py       # shim raiz para compatibilidade (re-exporta src/)
-docs/arquitetura.md            # técnica + mermaid PT+ES
-docs/guia-utilizador.md        # exemplos módulo e CLI PT+ES
+valida_nif_es.py       # shim raiz ES (re-exporta src/)
+valida_nif_fr.py       # shim raiz FR (re-exporta src/)
+valida_siret_fr.py     # alias FR (re-exporta src/)
+docs/arquitetura.md            # técnica + mermaid PT+ES+FR
+docs/guia-utilizador.md        # exemplos módulo e CLI PT+ES+FR
 docs/tabela-nif.md             # PT: tabela A-G/X
 docs/tabela-nif-es.md          # ES: tipos CIF + DNI/NIE
+docs/tabela-nif-fr.md          # FR: SIREN/SIRET/TVA/NIR
 ```
 
 ## Uso Rápido — PT
@@ -86,15 +90,53 @@ valida_nif_es --valida_nif 12345678Z
 
 Mais exemplos em [docs/guia-utilizador.md](docs/guia-utilizador.md).
 
-## Comparativo PT vs ES
+## Uso Rápido — FR (SIREN/SIRET/TVA/NIR)
 
-| Aspeto | PT | ES |
-|---|---|---|
-| Formato | 9 dígitos mod11 | DNI 8+letra mod23, NIE XYZ+7+letra mod23, CIF letra+7+dígito/letra |
-| Prefixo | `PT`/`pt` (Pt/pT inválido) | `ES`/`es` (Es/eS inválido) |
-| Normalização | trim + PT/pt | trim + ES/es + remove `-`/espaço + upper |
-| Controlo | `sum(d*(9-i))%11` | DNI `TRWAGMYFPDXBNJZSQVHLCKE[n%23]`, CIF soma pares + dobra ímpares + `JABCDEFGHI` |
-| Tipos | — | `ABEH` só dígito, `PQSNW` só letra, resto ambos |
+```python
+from valida_nif_fr import valida_siren, valida_siret, valida_tva_fr, valida_nir, valida_nif_fr
+from valida_nif_fr import completa_siren, completa_siret, completa_tva_fr, completa_nir
+
+valida_siren("732829320")       # True  (Luhn)
+valida_siren("FR732829320")     # True  (FR/fr + espaço/-/. )
+valida_siret("73282932000074")  # True  (14 Luhn + SIREN)
+valida_tva_fr("FR40303265045")  # True  # clé=(12+3*(SIREN%97))%97 SIREN 303265045
+valida_tva_fr("FR96552100554")  # True  # SIREN 552100554
+valida_nir("184127500112356")   # True  # 97-(n%97), 2A→19/2B→18
+valida_nif_fr("732829320")      # True  # dispatcher SIREN|SIRET|TVA|NIR
+completa_siren("73282932")      # "732829320"
+completa_siret("7328293200007") # "73282932000074"
+completa_tva_fr("303265045")    # "FR40303265045"
+completa_nir("1841275001123")   # "184127500112356"
+```
+
+CLI FR:
+
+```bash
+python -m valida_nif_fr --valida_nif 732829320
+python -m valida_nif_fr --valida_siren 732829320
+python -m valida_nif_fr --valida_siret 73282932000074
+python -m valida_nif_fr --valida_tva FR40303265045
+python -m valida_nif_fr --valida_nir 184127500112356
+python -m valida_nif_fr --completa 73282932
+python -m valida_nif_fr --completa_siren 73282932
+python -m valida_nif_fr --completa_siret 7328293200007
+python -m valida_nif_fr --completa_tva 303265045
+python -m valida_nif_fr --completa_nir 1841275001123  # 184127500112356
+python src/valida_nif_fr.py --valida_siren 732829320  # sem instalar
+# após pip install -e .:
+valida-nif-fr --valida_siren 732829320
+valida-siret-fr --valida_siret 73282932000074
+```
+
+## Comparativo PT vs ES vs FR
+
+| Aspeto | PT | ES | FR |
+|---|---|---|---|
+| Formato | 9 dígitos mod11 | DNI 8+letra mod23, NIE XYZ+7+letra mod23, CIF letra+7+dígito/letra | SIREN 9 Luhn, SIRET 14 Luhn, TVA FR+2+9 mod97, NIR 15 mod97 |
+| Prefixo | `PT`/`pt` (Pt/pT inválido) | `ES`/`es` (Es/eS inválido) | `FR`/`fr` (Fr/fR inválido) |
+| Normalização | trim + PT/pt | trim + ES/es + remove `-`/espaço + upper | trim + FR/fr + remove `-`/espaço/`.` + upper |
+| Controlo | `sum(d*(9-i))%11` | DNI `TRWAGMYFPDXBNJZSQVHLCKE[n%23]`, CIF soma pares + dobra ímpares + `JABCDEFGHI` | Luhn `soma*2-9`, TVA `(12+3*(siren%97))%97`, NIR `97-(n%97)` (2A→19/2B→18) |
+| Tipos | — | `ABEH` só dígito, `PQSNW` só letra, resto ambos | SIRET exige SIREN válido; TVA exige SIREN; NIR `2A`/`2B` |
 
 ## Classificação PT (índice 1-char)
 
@@ -114,10 +156,11 @@ Tabela ES em [docs/tabela-nif-es.md](docs/tabela-nif-es.md).
 
 ## Documentação
 
-- [Arquitetura](docs/arquitetura.md) — fluxos PT+ES e mermaid
-- [Guia de Utilizador](docs/guia-utilizador.md) — PT+ES (módulo e CLI)
+- [Arquitetura](docs/arquitetura.md) — fluxos PT+ES+FR e mermaid
+- [Guia de Utilizador](docs/guia-utilizador.md) — PT+ES+FR (módulo e CLI)
 - [Tabela NIF PT](docs/tabela-nif.md) — A-G/X
 - [Tabela NIF ES](docs/tabela-nif-es.md) — DNI/NIE/CIF
+- [Tabela NIF FR](docs/tabela-nif-fr.md) — SIREN/SIRET/TVA/NIR
 
 ## Changelog
 
